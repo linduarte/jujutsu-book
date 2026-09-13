@@ -1,0 +1,11 @@
+/.quarto/
+**/*.quarto_ipynb
+# Ambientes Python e uv
+.venv/
+__pycache__/
+
+# Compilação e caches do Quarto
+_book/
+.quarto/
+*_files/
+*_cache/

@@ -1,0 +1,24 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Jujutsu Book"
+  subtitle: "Guia Prático de Jujutsu VCS com Quarto e uv"
+  author: "Charles Duarte"
+  date: last-modified
+  chapters:
+    - index.qmd
+    - topics/getting-started.md
+    - topics/jj-learning-path.md
+    - topics/jj-exercises.md
+    - topics/jj_exerc_grok.md
+
+format:
+  html:
+    theme: cosmo
+    code-copy: true
+    toc: true
+
+execute:
+  freeze: auto
