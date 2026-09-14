@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Drill: Migrar Repositório Git Existente para jj (usando –colocate) – Jujutsu Book</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../topics/jj-exercises.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-81a3b542eb5e89c0ecbe2096688e9360.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../topics/jj_exerc_grok.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Drill: Migrar Repositório Git Existente para jj (usando –colocate)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Jujutsu Book</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../topics/getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Getting Started with Jujutsu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../topics/jj-learning-path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Learning Jujutsu (jj) - Step-by-Step Guide</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../topics/jj-exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Jujutsu (jj) Exercises - By Level</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../topics/jj_exerc_grok.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Drill: Migrar Repositório Git Existente para jj (usando –colocate)</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#preparação-inicial-importante" id="toc-preparação-inicial-importante" class="nav-link active" data-scroll-target="#preparação-inicial-importante"><span class="header-section-number">5.1</span> ⚠️ Preparação Inicial (Importante)</a></li>
+  <li><a href="#passo-a-passo" id="toc-passo-a-passo" class="nav-link" data-scroll-target="#passo-a-passo"><span class="header-section-number">5.2</span> Passo a Passo</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Drill: Migrar Repositório Git Existente para jj (usando –colocate)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Objetivo:</strong> Transformar um repositório Git tradicional em um repositório <strong>jj + Git colocate</strong>, mantendo total compatibilidade.</p>
+<hr>
+<section id="preparação-inicial-importante" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="preparação-inicial-importante"><span class="header-section-number">5.1</span> ⚠️ Preparação Inicial (Importante)</h2>
+<ul>
+<li>Entre na pasta do repositório Git existente</li>
+<li>Certifique-se que está limpo: <code>git status</code></li>
+<li>Faça um <code>git pull</code> para atualizar</li>
+<li><strong>Faça backup</strong> da pasta antes de começar (recomendado na primeira vez)</li>
+</ul>
+<hr>
+</section>
+<section id="passo-a-passo" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="passo-a-passo"><span class="header-section-number">5.2</span> Passo a Passo</h2>
+<section id="entre-na-pasta-do-repositório-git" class="level4" data-number="5.2.0.1">
+<h4 data-number="5.2.0.1" class="anchored" data-anchor-id="entre-na-pasta-do-repositório-git"><span class="header-section-number">5.2.0.1</span> 1. Entre na pasta do repositório Git</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> D<span class="op">:</span>\reposground\personal\self_backup</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="_assets/image-20260613-092318-3fmtwj.png" class="img-fluid"></p>
+</section>
+<section id="inicialize-o-jj-com-colocate" class="level4" data-number="5.2.0.2">
+<h4 data-number="5.2.0.2" class="anchored" data-anchor-id="inicialize-o-jj-com-colocate"><span class="header-section-number">5.2.0.2</span> 2. Inicialize o jj com –colocate</h4>
+<p><img src="_assets/image-20260613-092751-2q4l6p.png" class="img-fluid"></p>
+<p>✅ Etapa 2: jj git init –colocate — Executado com sucesso! Análise do resultado:</p>
+<p>“Done importing changes from the underlying Git repo.” → Excelente! O jj importou todo o histórico do Git. “Setting the revset alias trunk() to main@origin” → Normal e desejado. Hint sobre bookmark → É só um aviso útil. Vamos resolver na próxima etapa. “Initialized repo in ‘.’” → Migração concluída com sucesso.</p>
+<p>O repositório agora está em modo colocate (jj + Git convivendo na mesma pasta).</p>
+</section>
+<section id="etapa" class="level4" data-number="5.2.0.3">
+<h4 data-number="5.2.0.3" class="anchored" data-anchor-id="etapa"><span class="header-section-number">5.2.0.3</span> 3. Etapa</h4>
+<p>Execute os seguintes comandos:</p>
+<pre><code># Verificar status
+jj st
+# Ver histórico
+jj log</code></pre>
+<p>Observações importantes:</p>
+<p>jj st deve mostrar o working copy limpo ou com as mesmas informações que o git status. jj log deve mostrar o histórico completo que existia no Git. O jj agora gerencia os “changes”, mas a pasta .git continua intacta.</p>
+<p><img src="_assets/image-20260613-093254-eeaehc.png" class="img-fluid"></p>
+<p>✅ Etapa 3: Verificação de Status e Histórico — Muito Bom!</p>
+<p>Análise do que aconteceu: jj st → Mostra que existem modificações pendentes nos arquivos README.md e backmeup.py. Isso é normal após a migração. jj log → O histórico Git foi importado corretamente. Você vê os commits anteriores e o novo change criado pelo jj. O working copy atual está em um change sem descrição (no description set).</p>
+</section>
+<section id="descrever-o-change-atual" class="level4" data-number="5.2.0.4">
+<h4 data-number="5.2.0.4" class="anchored" data-anchor-id="descrever-o-change-atual"><span class="header-section-number">5.2.0.4</span> 4.Descrever o change atual</h4>
+<p>Execute:</p>
+<pre><code>jj describe -m "Migração inicial para jj - configuração do projeto"</code></pre>
+<p><img src="_assets/image-20260613-093636-awmpaf.png" class="img-fluid"></p>
+<p>Observações importantes:</p>
+<p>Este comando é equivalente ao git commit –amend para editar a mensagem. No jj, é muito comum editar a descrição várias vezes antes de fazer push. Depois de descrever, rode jj st e jj log novamente para ver a diferença.</p>
+<p>✅ Etapa 4: jj describe — Executado com sucesso!</p>
+<p>Análise: O comando funcionou perfeitamente. A descrição do change atual foi atualizada para: “Migração inicial para jj - configuração do projeto”. O working copy agora está devidamente descrito.</p>
+<section id="verificar-novamente-o-status-e-histórico" class="level5" data-number="5.2.0.4.1">
+<h5 data-number="5.2.0.4.1" class="anchored" data-anchor-id="verificar-novamente-o-status-e-histórico"><span class="header-section-number">5.2.0.4.1</span> .5 Verificar novamente o status e histórico</h5>
+<p>Execute:</p>
+<pre><code>jj st
+jj log</code></pre>
+<p><img src="_assets/image-20260613-093928-67pnud.png" class="img-fluid"></p>
+<p>Observações importantes:</p>
+<p>jj st deve mostrar as mudanças pendentes (README.md e backmeup.py) e o working copy com a nova descrição. jj log deve mostrar o change mais recente com a mensagem que você acabou de definir. Neste momento você ainda não fez commit/push — está tudo local no jj.</p>
+<p>✅ Etapa 5: Status e Log após describe — Perfeito! Análise da imagem:</p>
+<p>jj st → Mostra corretamente as duas alterações pendentes (README.md e backmeup.py). jj log → O change atual já aparece com a descrição que você definiu (“Migração inicial para jj - configuração do projeto”). O histórico Git anterior foi preservado.</p>
+</section>
+</section>
+<section id="etapa-6a-preparação-do-ssh-agent-windows" class="level4" data-number="5.2.0.5">
+<h4 data-number="5.2.0.5" class="anchored" data-anchor-id="etapa-6a-preparação-do-ssh-agent-windows"><span class="header-section-number">5.2.0.5</span> Etapa 6a: Preparação do ssh-agent (Windows)</h4>
+<p>Abra o PowerShell como Administrator e execute:</p>
+<pre><code>Set-Service -Name "ssh-agent" -StartupType Automatic
+Start-Service -Name "ssh-agent"
+Get-Service -Name "ssh-agent"</code></pre>
+<p><img src="_assets/image-20260613-094626-vjpfl7.png" class="img-fluid"></p>
+<p>Depois volte para o PowerShell normal (sem admin).</p>
+<p>Etapa 6b: Push com a chave Personal Dentro da pasta do projeto (self_backup), execute:</p>
+<pre><code># Limpar e carregar a chave Personal
+ssh-add -D
+ssh-add "C:\Users\Admin\.ssh\id_ed25519_sk_personal_v2"
+# Verificar se carregou corretamente
+ssh-add -l
+# Assinar o change
+jj sign --key "C:\Users\Admin\.ssh\id_ed25519_sk_personal_v2"
+# Fazer o push
+jj git push</code></pre>
+<p><img src="_assets/image-20260613-094918-9rdgcl.png" class="img-fluid"></p>
+<p>✅ Etapa 6: Assinatura e Tentativa de Push — Muito Bom! Análise:</p>
+<p>jj sign → Funcionou perfeitamente (assinou o change). jj git push → Deu “Nothing changed” porque o bookmark main ainda não está trackeando o remote.</p>
+<p>Isso é normal na migração.</p>
+</section>
+<section id="próxima-etapa-etapa-7-corrigir-o-bookmark-e-fazer-o-push-final" class="level4" data-number="5.2.0.6">
+<h4 data-number="5.2.0.6" class="anchored" data-anchor-id="próxima-etapa-etapa-7-corrigir-o-bookmark-e-fazer-o-push-final"><span class="header-section-number">5.2.0.6</span> .7Próxima etapa (Etapa 7): Corrigir o bookmark e fazer o push final</h4>
+<p>Execute:</p>
+<pre><code># 1. Corrigir o tracking do bookmark
+jj bookmark track main --remote=origin
+# 2. Fazer o push novamente
+jj git push</code></pre>
+<p><img src="_assets/image-20260613-095151-tc5e3e.png" class="img-fluid"></p>
+<p>Observações importantes:</p>
+<p>O comando jj bookmark track resolve o aviso que apareceu. Depois disso, o jj git push deve enviar as alterações. Toque na YubiKey se for solicitado novamente.</p>
+<p>✅ Etapa 7: Bookmark track — Feito!</p>
+<p>O tracking foi configurado corretamente.</p>
+<p>Por que ainda aparece “Nothing changed”? Porque as alterações que você fez (README.md e backmeup.py) já foram incluídas no change atual que você descreveu e assinou. O jj não vê mais nada pendente para enviar.</p>
+</section>
+<section id="próxima-etapa-etapa-8-forçar-o-push-ou-criar-um-novo-change" class="level4" data-number="5.2.0.7">
+<h4 data-number="5.2.0.7" class="anchored" data-anchor-id="próxima-etapa-etapa-8-forçar-o-push-ou-criar-um-novo-change"><span class="header-section-number">5.2.0.7</span> .8Próxima etapa (Etapa 8): Forçar o push ou criar um novo change</h4>
+<p>Execute uma das duas opções:</p>
+<p>Opção A (Recomendada agora):</p>
+<pre><code># Fazer push forçando o envio do change atual
+jj git push --force</code></pre>
+<p><img src="_assets/image-20260613-095537-scjpb8.png" class="img-fluid"></p>
+<p>✅ Correto!</p>
+<p>O jj git push não aceita –force dessa forma. Vamos usar o comando correto do jj.</p>
+<p>Correção (Etapa 8 corrigida): Execute:</p>
+<pre><code># Forçar o push no jj (forma correta)
+jj git push --allow-dirty</code></pre>
+<p><img src="_assets/image-20260613-095734-o6sx4r.png" class="img-fluid"></p>
+<p>✅ Entendido!</p>
+<p>O jj git push não aceita –allow-dirty. Vamos usar a abordagem mais simples e confiável.</p>
+<p>Etapa 8 Corrigida (faça agora):</p>
+<pre><code># 1. Crie um novo change pequeno só para testar o push
+jj new -m "Teste de push após migração para jj"
+# 2. Assine o change
+jj sign --key "C:\Users\Admin\.ssh\id_ed25519_sk_personal_v2"
+# 3. Faça o push
+jj git push</code></pre>
+<p><img src="_assets/image-20260613-100056-xxkwol.png" class="img-fluid"></p>
+<p><img src="_assets/image-20260613-100154-eyx5x9.png" class="img-fluid"></p>
+<p>✅ Entendi!</p>
+<p>Você criou o novo change com jj new, mas o push ainda não enviou nada porque o bookmark main ainda não está totalmente sincronizado com o remote.</p>
+<p>Próxima etapa (Etapa 9): Execute estes comandos:</p>
+<pre><code># 1. Corrigir o tracking do bookmark (importante após jj new)
+jj bookmark track main --remote=origin
+# 2. Fazer o push novamente
+jj git push</code></pre>
+<p><img src="_assets/image-20260613-100445-uclmsj.png" class="img-fluid"></p>
+<p>✅ Entendi o que está acontecendo.</p>
+<p>Mesmo após o jj bookmark track, o jj git push ainda diz “Nothing changed” porque o novo change criado com jj new não está sendo considerado parte do main para o push padrão.</p>
+<p>Etapa 9 Corrigida (solução definitiva): Execute estes comandos:</p>
+<pre><code># 1. Mover o bookmark 'main' para o change atual
+jj bookmark set main
+# 2. Fazer o push
+jj git push</code></pre>
+<p><img src="_assets/image-20260613-100653-8mm8k2.png" class="img-fluid"></p>
+<p>✅ SUCESSO TOTAL! 🎉</p>
+<p>O push foi realizado com sucesso!</p>
+<p>Análise final desta etapa: O jj enviou os objetos para o repositório remoto. Um novo commit foi criado no GitHub/GitLab. A migração com –colocate está completa. Etapa Final: Verificação no GitHub Abra o navegador e vá até o seu repositório. Verifique se o commit mais recente aparece com o selo Verified (verde). Confira se o arquivo README.md foi atualizado com as mudanças.</p>
+<p><img src="_assets/image-20260613-100916-6nssgp.png" class="img-fluid"></p>
+</section>
+<section id="resumo-final-migração-git-jj-com-colocate-fluxo-de-sucesso" class="level4" data-number="5.2.0.8">
+<h4 data-number="5.2.0.8" class="anchored" data-anchor-id="resumo-final-migração-git-jj-com-colocate-fluxo-de-sucesso"><span class="header-section-number">5.2.0.8</span> Resumo Final: Migração Git → jj com –colocate (Fluxo de Sucesso)</h4>
+<p>Pré-requisitos Repositório Git limpo e atualizado (git status e git pull) ssh-agent rodando Chave YubiKey carregada (ssh-add) Fluxo de Sucesso (Passo a Passo) 1. Entre na pasta do repositório Git existente</p>
+<pre><code>cd caminho/do/seu/repositorio</code></pre>
+<ol start="2" type="1">
+<li>Inicialize o jj em modo colocate</li>
+</ol>
+<pre><code>jj git init --colocate</code></pre>
+<ol start="3" type="1">
+<li>Verifique o status e histórico</li>
+</ol>
+<pre><code>jj st
+jj log</code></pre>
+<ol start="4" type="1">
+<li>Faça alterações e descreva o change</li>
+</ol>
+<pre><code># Faça suas alterações normalmente
+jj describe -m "Descrição clara do change"</code></pre>
+<ol start="5" type="1">
+<li>Configure o bookmark main</li>
+</ol>
+<pre><code>jj bookmark set main
+jj bookmark track main --remote=origin</code></pre>
+<ol start="6" type="1">
+<li>Assine e envie (Fluxo que funcionou)</li>
+</ol>
+<pre><code># Assine o change
+jj sign --key "C:\Users\Admin\.ssh\id_ed25519_sk_personal_v2"   # Windows
+# ou
+jj sign --key "~/.ssh/gitlab_fido2"                             # Linux
+# Faça o push
+jj git push</code></pre>
+</section>
+<section id="comandos-essenciais-do-dia-a-dia-após-migração" class="level4" data-number="5.2.0.9">
+<h4 data-number="5.2.0.9" class="anchored" data-anchor-id="comandos-essenciais-do-dia-a-dia-após-migração"><span class="header-section-number">5.2.0.9</span> Comandos Essenciais do Dia a Dia (após migração)</h4>
+<pre><code>jj st                    # Status
+jj log                   # Histórico
+jj new                   # Novo change
+jj describe -m "..."     # Editar mensagem
+jj sign --key "..."      # Assinar
+jj git push              # Enviar</code></pre>
+</section>
+<section id="alias-recomendado-adicione-no-config.toml" class="level4" data-number="5.2.0.10">
+<h4 data-number="5.2.0.10" class="anchored" data-anchor-id="alias-recomendado-adicione-no-config.toml"><span class="header-section-number">5.2.0.10</span> Alias recomendado (adicione no config.toml):</h4>
+<pre><code>pushs = ["sign", "--", "git", "push"]</code></pre>
+<p>Uso: jj pushs</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../topics/jj-exercises.html" class="pagination-link" aria-label="Jujutsu (jj) Exercises - By Level">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Jujutsu (jj) Exercises - By Level</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

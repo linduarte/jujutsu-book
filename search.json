@@ -1,0 +1,302 @@
+[
+  {
+    "objectID": "topics/getting-started.html",
+    "href": "topics/getting-started.html",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "",
+    "text": "2.1 Prerequisites\nYour first steps with Jujutsu VCS - from initialization to your first change.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#prerequisites",
+    "href": "topics/getting-started.html#prerequisites",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "",
+    "text": "Jujutsu installed\nBasic familiarity with version control concepts\nOptional: Git installed (for Git interoperability)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#your-first-repository",
+    "href": "topics/getting-started.html#your-first-repository",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.2 Your First Repository",
+    "text": "2.2 Your First Repository\n\n2.2.1 Option 1: Start with an Existing Git Repository (Recommended)\nThe easiest way to try jj is with an existing Git repository using colocated mode:\n# Navigate to your Git repository\ncd /path/to/your/git/repo\n# Initialize jj in colocated mode\njj git init --colocate\n# You can now use both git and jj commands!\nThis creates a .jj directory alongside your .git directory. Both tools work on the same repository.\n\n\n2.2.2 Option 2: Clone a Git Repository\n# Clone a repository with jj\njj git clone --colocate https://github.com/user/repo.git\n# Or use SSH\njj git clone --colocate git@github.com:user/repo.git\n\n\n2.2.3 Option 3: Create a New Repository\n# Create a new directory\nmkdir my-project\ncd my-project\n# Initialize as a jj repository with Git backend\njj git init\n# Or use colocated mode (recommended)\njj git init --colocate\n\n\n2.2.4 Option 4: Pure jj Repository (No Git)\nmkdir my-project\ncd my-project\njj init\nNote: Most users should use Git-backed repositories for compatibility with remotes.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#understanding-your-repository-state",
+    "href": "topics/getting-started.html#understanding-your-repository-state",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.3 Understanding Your Repository State",
+    "text": "2.3 Understanding Your Repository State\nAfter initialization, check your repository status:\n# View the current state\njj status\n# Example output:\n# Working copy : qpvuntsm 4e411c1a (empty) (no description set)\n# Parent commit: zzzzzzzz 00000000 (empty) (no description set)\n\n2.3.1 What This Means\n\nWorking copy: Your current working state (always a commit in jj!)\nParent commit: The commit you’re building on\nChange ID (e.g., qpvuntsm): A unique identifier that persists across rebases\nCommit ID (e.g., 4e411c1a): The actual commit hash (changes with content)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#your-first-change",
+    "href": "topics/getting-started.html#your-first-change",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.4 Your First Change",
+    "text": "2.4 Your First Change\n\n2.4.1 Traditional Workflow (Like Git)\n# 1. Create a new change\njj new -m \"Add hello world example\"\n# 2. Edit files\necho \"print('Hello, world!')\" &gt; hello.py\n# 3. Check status\njj status\n# Output shows hello.py as added\n# 4. View what changed\njj diff\n# 5. Squash changes into the current change\njj squash\n\n\n2.4.2 Modern Workflow (Recommended)\nIn jj, you can describe what you’re going to do first:\n# 1. Create a new change with description\njj new -m \"Add hello world example\"\n# 2. Make your changes\necho \"print('Hello, world!')\" &gt; hello.py\n# 3. The changes are automatically in the current change!\njj status  # Shows changes in current commit\n# 4. Continue to next change\njj new -m \"Add README\"\necho \"# My Project\" &gt; README.md\nKey Insight: Your working directory is always a commit. No need to “stage” changes!",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#viewing-history",
+    "href": "topics/getting-started.html#viewing-history",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.5 Viewing History",
+    "text": "2.5 Viewing History\n# View commit history\njj log\n# Example output:\n# @  qpvuntsm ben@example.com 2025-10-15 10:23:45 4e411c1a\n# │  Add hello world example\n# ◉  zzzzzzzz root() 00000000\n#    (empty) (no description set)\n\n2.5.1 Understanding the Log\n\n@ - Your current working copy\n◉ - Other commits\n│ - Ancestry lines\nChange IDs and commit IDs\nAuthor, timestamp, and description\n\n\n\n2.5.2 Customizing Log Output\n# Show more commits\njj log -r 'all()'\n# Show specific range\njj log -r 'main@origin..'\n# Compact format\njj log --no-graph\n# More details\njj show",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#making-more-changes",
+    "href": "topics/getting-started.html#making-more-changes",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.6 Making More Changes",
+    "text": "2.6 Making More Changes\n\n2.6.1 Linear History\n# Create a change\njj new -m \"Add feature A\"\n# Edit files...\n# Create another change on top\njj new -m \"Add feature B\"\n# Edit files...\n# View the stack\njj log\n\n\n2.6.2 Parallel Changes (Branching)\n# Go back to a previous change\njj edit @-  # Or use a change ID\n# Create a new change from here\njj new -m \"Alternative approach\"\n# Edit files...\n# You now have parallel changes!\njj log  # Shows the branch",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#working-with-remotes",
+    "href": "topics/getting-started.html#working-with-remotes",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.7 Working with Remotes",
+    "text": "2.7 Working with Remotes\n\n2.7.1 Fetching Changes\n# Fetch from the default remote\njj git fetch\n# Fetch from a specific remote\njj git fetch --remote origin\n# Fetch all remotes\njj git fetch --all-remotes\n\n\n2.7.2 Pushing Changes\n# Create a bookmark (like a Git branch)\njj bookmark create my-feature\n# Push the bookmark\njj git push --bookmark my-feature\n# Or push all bookmarks\njj git push --all\n\n\n2.7.3 Tracking Remote Changes\n# See remote bookmarks\njj bookmark list --all\n# Track a remote bookmark\njj bookmark track main@origin\n# Rebase onto latest main\njj rebase -d main@origin",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#essential-commands-summary",
+    "href": "topics/getting-started.html#essential-commands-summary",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.8 Essential Commands Summary",
+    "text": "2.8 Essential Commands Summary\n\n\n\nCommand\nPurpose\n\n\n\n\njj status\nShow working copy status\n\n\njj log\nView commit history\n\n\njj new -m \"msg\"\nCreate new change with description\n\n\njj edit &lt;rev&gt;\nSwitch to a different change\n\n\njj diff\nShow changes in working copy\n\n\njj show\nShow details of current change\n\n\njj squash\nMove changes into parent\n\n\njj describe\nEdit change description\n\n\njj undo\nUndo last operation",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#common-first-time-questions",
+    "href": "topics/getting-started.html#common-first-time-questions",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.9 Common First-Time Questions",
+    "text": "2.9 Common First-Time Questions\n\n2.9.1 Q: Where’s the staging area?\nA: There isn’t one! Your working directory is always a commit. Changes are automatically tracked.\n\n\n2.9.2 Q: How do I commit?\nA: You don’t “commit” in the Git sense. Instead: 1. Create a new change with jj new -m \"description\" 2. Make your edits 3. The changes are already in that change!\n\n\n2.9.3 Q: How do I amend?\nA: Just edit the change you want to modify:\njj edit &lt;change-id&gt;  # Switch to the change\n# Make edits...\n# They're automatically in that change!\n\n\n2.9.4 Q: What if I make a mistake?\nA: Use jj undo! It undoes the last operation. You can undo multiple times.\njj undo  # Undo last operation\njj undo  # Undo the one before that\n\n\n2.9.5 Q: Can I still use Git commands?\nA: Yes! In colocated mode, you can use both:\ngit status  # Works!\njj status   # Also works!\nHowever, prefer jj commands for making changes to avoid confusion.\n\n\n2.9.6 Q: How do I create a branch?\nA: In jj, they’re called “bookmarks”:\njj bookmark create feature-name\njj bookmark list  # See all bookmarks",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#example-workflow-making-a-pull-request",
+    "href": "topics/getting-started.html#example-workflow-making-a-pull-request",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.10 Example Workflow: Making a Pull Request",
+    "text": "2.10 Example Workflow: Making a Pull Request\n# 1. Start fresh from main\njj git fetch\njj new main@origin -m \"Add new feature\"\n# 2. Make changes\necho \"new feature\" &gt; feature.txt\n# 3. Create a bookmark for PR\njj bookmark create new-feature\n# 4. Push to remote\njj git push --bookmark new-feature\n# 5. Create PR using GitHub CLI or web interface\ngh pr create --title \"Add new feature\" --body \"Description\"",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#example-workflow-fixing-a-bug",
+    "href": "topics/getting-started.html#example-workflow-fixing-a-bug",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.11 Example Workflow: Fixing a Bug",
+    "text": "2.11 Example Workflow: Fixing a Bug\n# 1. Create a change for the fix\njj new -m \"Fix: Resolve null pointer issue\"\n# 2. Make the fix\n# Edit files...\n# 3. Test your fix\n./run-tests.sh\n# 4. If tests fail, edit more\n# Files automatically update the same change!\n# 5. Describe the fix better if needed\njj describe  # Opens editor\n# 6. Push the fix\njj bookmark create bugfix-123\njj git push --bookmark bugfix-123",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#example-workflow-exploring-history",
+    "href": "topics/getting-started.html#example-workflow-exploring-history",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.12 Example Workflow: Exploring History",
+    "text": "2.12 Example Workflow: Exploring History\n# View recent history\njj log\n# Look at a specific change\njj show &lt;change-id&gt;\n# See what changed in a file\njj diff -r &lt;change-id&gt; path/to/file\n# Go back in time\njj edit &lt;change-id&gt;\n# Look around, test things...\n# Return to latest\njj edit @-  # Or use the change ID",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#tips-for-git-users",
+    "href": "topics/getting-started.html#tips-for-git-users",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.13 Tips for Git Users",
+    "text": "2.13 Tips for Git Users\n\n2.13.1 Mental Model Shift\n\n\n\nGit Concept\nJujutsu Concept\n\n\n\n\nStaging area\nNone - working copy is a commit\n\n\nBranch\nBookmark (less important)\n\n\nHEAD\n@ (working copy)\n\n\nCommit\nChange (mutable until pushed)\n\n\nRebase\nAutomatic in many cases\n\n\nStash\nNot needed - just edit any change\n\n\n\n\n\n2.13.2 Common Translations\n# Git → Jujutsu\n# git add -p; git commit -m \"msg\"\njj new -m \"msg\"  # Then edit files\n# git commit --amend\njj describe  # Or just edit files in the current change\n# git rebase -i HEAD~3\njj log  # Then jj squash, jj rebase, etc.\n# git stash\njj edit &lt;other-change&gt;  # Switch to any change\n# git cherry-pick &lt;commit&gt;\njj duplicate &lt;change&gt;  # Or jj rebase\n# git reset --hard HEAD~1\njj abandon @  # Or jj undo",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#next-steps",
+    "href": "topics/getting-started.html#next-steps",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.14 Next Steps",
+    "text": "2.14 Next Steps\nNow that you understand the basics:\n\nCore Concepts - Deepen your understanding\nWorkflows - Learn common patterns\nCommands Reference - Explore all commands\nGit Comparison - Complete Git command mapping",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/getting-started.html#practice-exercise",
+    "href": "topics/getting-started.html#practice-exercise",
+    "title": "2  Getting Started with Jujutsu",
+    "section": "2.15 Practice Exercise",
+    "text": "2.15 Practice Exercise\nTry this sequence to get comfortable:\n# 1. Initialize a test repository\nmkdir jj-practice\ncd jj-practice\njj git init --colocate\n# 2. Create a series of changes\njj new -m \"First change\"\necho \"first\" &gt; file.txt\njj new -m \"Second change\"\necho \"second\" &gt;&gt; file.txt\njj new -m \"Third change\"\necho \"third\" &gt;&gt; file.txt\n# 3. View your stack\njj log\n# 4. Go back and modify the first change\njj edit @--  # Two parents back\necho \"modified first\" &gt; file.txt\n# 5. See how descendants were automatically rebased!\njj log\n# 6. Experiment with undo\njj undo  # Undo the edit\njj log   # Back to before\n# 7. Clean up\ncd ..\nrm -rf jj-practice\n\n← Back to Installation | Main | Next: Core Concepts →",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Getting Started with Jujutsu</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-learning-path.html",
+    "href": "topics/jj-learning-path.html",
+    "title": "3  Learning Jujutsu (jj) - Step-by-Step Guide",
+    "section": "",
+    "text": "3.1 Level 1: Complete Beginner\nModern Workflow with jj git init --colocate\nAct like an expert teacher and skill coach. This guide breaks the topic into 5 clear difficulty levels.\nWhat you should understand at this stage:\nJujutsu (jj) is a modern version control system that works seamlessly with Git. It uses a “change-centric” model where your working copy is always a real commit (no separate staging area like Git’s index). Changes to files are automatically snapshotted into the current change. You start with jj git init --colocate for a hybrid setup that keeps full Git compatibility.\nWhat mastery looks like at this level:\nYou can initialize a repo, make simple file changes, see your status, describe what you’re doing, and create new changes without panic. You feel safe experimenting because everything is tracked.\nThe most important concepts or skills to focus on:\n- Installing jj and running jj git init --colocate (or jj git clone --colocate).\n- jj status (or jj st), jj log, jj diff.\n- The working copy @ is always a commit.\n- jj new -m \"description\" to start a new change.\n- jj describe to add/edit a message.\n- Automatic tracking of changes (no git add needed usually).\nOne milestone that proves you are ready to move forward:\nYou have a working local repo with 2-3 changes in your history, visible in jj log, and you understand why the working copy changes its commit ID but keeps a stable change ID.\nOne hands-on exercise or mini-project:\n1. Create a new directory, cd into it.\n2. Run jj git init --colocate.\n3. jj new -m \"Add hello world\", create hello.py with some code.\n4. jj status, jj diff, jj new -m \"Add README\", add a README.\n5. Explore jj log.\nCommon mistakes learners make at this level:\n- Forgetting to run jj new and thinking you’re “staging” like Git.\n- Ignoring the difference between change ID (stable) and commit ID (changes on rewrite).\n- Trying Git commands that conflict with jj’s automatic snapshots.\nA simple self-check question before moving to the next level:\nWhat does jj st show after you edit a file in the working copy, and why didn’t you need to add it?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Learning Jujutsu (jj) - Step-by-Step Guide</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-learning-path.html#level-2-basic-understanding",
+    "href": "topics/jj-learning-path.html#level-2-basic-understanding",
+    "title": "3  Learning Jujutsu (jj) - Step-by-Step Guide",
+    "section": "3.2 Level 2: Basic Understanding",
+    "text": "3.2 Level 2: Basic Understanding\nWhat you should understand at this stage:\nChanges evolve (mutable until shared/pushed), while the repo history is built from them. You can move between changes, amend, and start fresh ones. The operation log (jj op log) lets you undo almost anything.\nWhat mastery looks like at this level:\nYou routinely create descriptive changes upfront, edit files, move to the next task cleanly, and recover from small mistakes using undo or evolog.\nThe most important concepts or skills to focus on:\n- jj new (with or without parent), jj describe.\n- jj squash (amend-like for current change).\n- jj edit &lt;change&gt; to resume editing an older change.\n- jj undo, jj op log, jj op restore.\n- Basic jj log navigation and the @ symbol for working copy.\n- jj diff and understanding evolog (jj evolog) for change history.\nOne milestone that proves you are ready to move forward:\nYou can start a change, make edits, decide it’s incomplete, jj new to the next task, then go back and jj squash or jj edit to refine the previous one.\nOne hands-on exercise or mini-project:\nBuild a small script project (e.g., a Python CLI tool). Create changes like “Initialize project structure”, “Add core function”, “Add CLI entrypoint”. Use jj new -m \"...\" upfront. Practice squashing a small fix into the first change.\nCommon mistakes learners make at this level:\n- Over-editing one massive change instead of breaking into logical ones.\n- Forgetting to describe changes early.\n- Relying too much on Git commands before learning jj equivalents.\nA simple self-check question before moving to the next level:\nHow do you safely experiment with a change and then either keep it or discard parts? Can you show jj op log to undo a bad jj new?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Learning Jujutsu (jj) - Step-by-Step Guide</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-learning-path.html#level-3-practical-user",
+    "href": "topics/jj-learning-path.html#level-3-practical-user",
+    "title": "3  Learning Jujutsu (jj) - Step-by-Step Guide",
+    "section": "3.3 Level 3: Practical User",
+    "text": "3.3 Level 3: Practical User\nWhat you should understand at this stage:\nBranch-like workflows use bookmarks (jj’s lighter alternative to Git branches). You push/pull with Git interop, handle simple rebases, and manage small stacks of changes.\nWhat mastery looks like at this level:\nDaily workflow feels smoother than Git: you create stacked changes for features, push to GitHub, update from remote, and resolve basic conflicts without stress.\nThe most important concepts or skills to focus on:\n- Bookmarks: jj bookmark create &lt;name&gt;, jj bookmark set, jj git push.\n- jj git fetch, syncing with remotes.\n- Rebasing: jj rebase -s &lt;source&gt; -o &lt;onto&gt;.\n- jj abandon for discarding changes.\n- Revsets basics: @, @-, ::@, etc. for jj log -r.\n- Conflict resolution with jj resolve or manual editing + jj squash.\nOne milestone that proves you are ready to move forward:\nYou clone a Git repo with jj, make 3-4 stacked changes, push them, fetch updates, and rebase your stack cleanly.\nOne hands-on exercise or mini-project:\nContribute to a small open-source repo or your own: implement a feature in 2-3 small changes, push, simulate a remote update, rebase, and resolve any conflicts.\nCommon mistakes learners make at this level:\n- Treating bookmarks exactly like Git branches.\n- Pushing before changes are ready.\n- Ignoring conflicts and not using jj new on conflicted parents.\nA simple self-check question before moving to the next level:\nExplain how to move a change “back in time” or reorder your stack. What command shows the full history including remote bookmarks?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Learning Jujutsu (jj) - Step-by-Step Guide</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-learning-path.html#level-4-problem-solver",
+    "href": "topics/jj-learning-path.html#level-4-problem-solver",
+    "title": "3  Learning Jujutsu (jj) - Step-by-Step Guide",
+    "section": "3.4 Level 4: Problem Solver",
+    "text": "3.4 Level 4: Problem Solver\nWhat you should understand at this stage:\nAdvanced history editing, revsets for powerful queries, absorbing changes, splitting, and working with larger stacks or team workflows. You leverage the operation log for safety.\nWhat mastery looks like at this level:\nYou confidently rewrite local history (squash, split, move changes), debug with revsets, handle merge conflicts in stacks, and integrate with GitHub PRs.\nThe most important concepts or skills to focus on:\n- Advanced revsets: foo::, foo..bar, functions like bookmarks(), trunk().\n- jj absorb, jj split, jj move.\n- jj evolog, detailed jj show.\n- Stacked PRs and updating them.\n- jj git push --all or selective.\n- Resolving complex conflicts.\nOne milestone that proves you are ready to move forward:\nYou take a messy branch with 5+ changes, clean it into logical commits using squash/split/move/absorb, rebase onto latest trunk, and push a clean stack.\nOne hands-on exercise or mini-project:\nRefactor a small codebase (add tests, rename, extract functions) across multiple files/changes. Use jj tools to reorganize the history into a polished sequence.\nCommon mistakes learners make at this level:\n- Overusing complex revsets before mastering basics.\n- Forgetting immutable commits (published ones).\n- Not checking jj op log before destructive operations.\n\n3.4.0.1 A simple self-check question before moving to the next level:\n\n\n3.4.0.2 How would you find all changes touching a specific file? Or absorb scattered edits into the right changes?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Learning Jujutsu (jj) - Step-by-Step Guide</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-learning-path.html#level-5-confident-practitioner",
+    "href": "topics/jj-learning-path.html#level-5-confident-practitioner",
+    "title": "3  Learning Jujutsu (jj) - Step-by-Step Guide",
+    "section": "3.5 Level 5: Confident Practitioner",
+    "text": "3.5 Level 5: Confident Practitioner\nWhat you should understand at this stage:\nFull power of jj’s model: changes vs. revisions, mutable history locally with safe undo, Git interop, customization, and team best practices.\nWhat mastery looks like at this level:\nFluid, intentional development. You maintain clean histories, handle large refactors effortlessly, and use it daily as your primary VCS.\nThe most important concepts or skills to focus on:\n- Config customization, aliases, revset aliases.\n- Advanced workflows (edit vs. squash, large stacks).\n- Performance with big repos.\n- Collaboration patterns: stacked diffs, code review.\n- Deep operation log usage.\n- When to use native jj backend.\nOne milestone that proves you are ready to move forward:\nYou migrate a medium-sized Git project fully, set up team conventions, and comfortably mentor others on jj.\nOne hands-on exercise or mini-project:\nSet up a personal or team project with jj best practices. Tackle a non-trivial refactor using all tools.\nCommon mistakes learners make at this level:\n- Premature optimization.\n- Not sharing knowledge with the team.\n- Ignoring upstream changes in long-lived stacks.\n\n3.5.0.0.1 A simple self-check question before considering yourself advanced:\n\n\n3.5.0.0.2 Design a workflow for a feature that requires parallel experiments, then merging the best parts. How does jj’s model make this easier?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Learning Jujutsu (jj) - Step-by-Step Guide</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html",
+    "href": "topics/jj-exercises.html",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "",
+    "text": "4.1 Level 1: Complete Beginner (3 Exercises)\nUse these alongside the main guide. Increase difficulty progressively.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html#level-1-complete-beginner-3-exercises",
+    "href": "topics/jj-exercises.html#level-1-complete-beginner-3-exercises",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "",
+    "text": "Initialize a new repo with jj git init --colocate. Create your first change using jj new -m \"Initial setup\" and add a README.md\nEdit files in the working copy, run jj st and jj diff, then create a second change with jj new.\nExplore history with jj log and modify a description with jj describe.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html#level-2-basic-understanding-5-exercises",
+    "href": "topics/jj-exercises.html#level-2-basic-understanding-5-exercises",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "4.2 Level 2: Basic Understanding (5 Exercises)",
+    "text": "4.2 Level 2: Basic Understanding (5 Exercises)\n\nCreate a change, make edits, then jj new to start the next one.\nReturn to the previous change and jj squash a fix into it.\nUse jj edit on an older change and amend it.\nIntentionally make a small mistake and recover with jj undo + check jj op log.\nUse jj evolog to inspect how a change evolved.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html#level-3-practical-user-7-exercises",
+    "href": "topics/jj-exercises.html#level-3-practical-user-7-exercises",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "4.3 Level 3: Practical User (7 Exercises)",
+    "text": "4.3 Level 3: Practical User (7 Exercises)\n1-2. Create and push a small stack of 2-3 changes using bookmarks\n\nFetch remote updates and rebase your local stack.\nIntentionally create a merge conflict and resolve it.\nManage bookmarks (jj bookmark commands).\nAbandon an unwanted change.\nUse basic revsets in jj log -r to filter history.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html#level-4-problem-solver-9-exercises",
+    "href": "topics/jj-exercises.html#level-4-problem-solver-9-exercises",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "4.4 Level 4: Problem Solver (9 Exercises)",
+    "text": "4.4 Level 4: Problem Solver (9 Exercises)\n1-3. Practice jj absorb, jj split, and jj move on test changes\n4-6. Write and use simple revsets to select and operate on groups of changes.\n7-8. Rebase a stack with multiple conflicts and resolve them cleanly.\n\nTake a messy local history and reorganize it into clean logical commits.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj-exercises.html#level-5-confident-practitioner-12-exercises",
+    "href": "topics/jj-exercises.html#level-5-confident-practitioner-12-exercises",
+    "title": "4  Jujutsu (jj) Exercises - By Level",
+    "section": "4.5 Level 5: Confident Practitioner (12 Exercises)",
+    "text": "4.5 Level 5: Confident Practitioner (12 Exercises)\n1-4. Customize jj config, create useful aliases, and define revset aliases.\n5-7. Work with larger stacked changes and simulate stacked PR updates.\n8-9. Practice team collaboration scenarios (merges, reviews).\n10-11. Optimize for a larger repo (ignore patterns, performance checks).\n\nDocument your preferred jj workflow in a README and “teach” it (write notes or explain to someone).\n\nTip: After each level, run jj log and share output here for review. Progress one level at a time!",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Jujutsu (jj) Exercises - By Level</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj_exerc_grok.html",
+    "href": "topics/jj_exerc_grok.html",
+    "title": "5  Drill: Migrar Repositório Git Existente para jj (usando –colocate)",
+    "section": "",
+    "text": "5.1 ⚠️ Preparação Inicial (Importante)\nObjetivo: Transformar um repositório Git tradicional em um repositório jj + Git colocate, mantendo total compatibilidade.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Drill: Migrar Repositório Git Existente para jj (usando --colocate)</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj_exerc_grok.html#preparação-inicial-importante",
+    "href": "topics/jj_exerc_grok.html#preparação-inicial-importante",
+    "title": "5  Drill: Migrar Repositório Git Existente para jj (usando –colocate)",
+    "section": "",
+    "text": "Entre na pasta do repositório Git existente\nCertifique-se que está limpo: git status\nFaça um git pull para atualizar\nFaça backup da pasta antes de começar (recomendado na primeira vez)",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Drill: Migrar Repositório Git Existente para jj (usando --colocate)</span>"
+    ]
+  },
+  {
+    "objectID": "topics/jj_exerc_grok.html#passo-a-passo",
+    "href": "topics/jj_exerc_grok.html#passo-a-passo",
+    "title": "5  Drill: Migrar Repositório Git Existente para jj (usando –colocate)",
+    "section": "5.2 Passo a Passo",
+    "text": "5.2 Passo a Passo\n\n5.2.0.1 1. Entre na pasta do repositório Git\ncd D:\\reposground\\personal\\self_backup\n\n\n\n5.2.0.2 2. Inicialize o jj com –colocate\n\n✅ Etapa 2: jj git init –colocate — Executado com sucesso! Análise do resultado:\n“Done importing changes from the underlying Git repo.” → Excelente! O jj importou todo o histórico do Git. “Setting the revset alias trunk() to main@origin” → Normal e desejado. Hint sobre bookmark → É só um aviso útil. Vamos resolver na próxima etapa. “Initialized repo in ‘.’” → Migração concluída com sucesso.\nO repositório agora está em modo colocate (jj + Git convivendo na mesma pasta).\n\n\n5.2.0.3 3. Etapa\nExecute os seguintes comandos:\n# Verificar status\njj st\n# Ver histórico\njj log\nObservações importantes:\njj st deve mostrar o working copy limpo ou com as mesmas informações que o git status. jj log deve mostrar o histórico completo que existia no Git. O jj agora gerencia os “changes”, mas a pasta .git continua intacta.\n\n✅ Etapa 3: Verificação de Status e Histórico — Muito Bom!\nAnálise do que aconteceu: jj st → Mostra que existem modificações pendentes nos arquivos README.md e backmeup.py. Isso é normal após a migração. jj log → O histórico Git foi importado corretamente. Você vê os commits anteriores e o novo change criado pelo jj. O working copy atual está em um change sem descrição (no description set).\n\n\n5.2.0.4 4.Descrever o change atual\nExecute:\njj describe -m \"Migração inicial para jj - configuração do projeto\"\n\nObservações importantes:\nEste comando é equivalente ao git commit –amend para editar a mensagem. No jj, é muito comum editar a descrição várias vezes antes de fazer push. Depois de descrever, rode jj st e jj log novamente para ver a diferença.\n✅ Etapa 4: jj describe — Executado com sucesso!\nAnálise: O comando funcionou perfeitamente. A descrição do change atual foi atualizada para: “Migração inicial para jj - configuração do projeto”. O working copy agora está devidamente descrito.\n\n5.2.0.4.1 .5 Verificar novamente o status e histórico\nExecute:\njj st\njj log\n\nObservações importantes:\njj st deve mostrar as mudanças pendentes (README.md e backmeup.py) e o working copy com a nova descrição. jj log deve mostrar o change mais recente com a mensagem que você acabou de definir. Neste momento você ainda não fez commit/push — está tudo local no jj.\n✅ Etapa 5: Status e Log após describe — Perfeito! Análise da imagem:\njj st → Mostra corretamente as duas alterações pendentes (README.md e backmeup.py). jj log → O change atual já aparece com a descrição que você definiu (“Migração inicial para jj - configuração do projeto”). O histórico Git anterior foi preservado.\n\n\n\n5.2.0.5 Etapa 6a: Preparação do ssh-agent (Windows)\nAbra o PowerShell como Administrator e execute:\nSet-Service -Name \"ssh-agent\" -StartupType Automatic\nStart-Service -Name \"ssh-agent\"\nGet-Service -Name \"ssh-agent\"\n\nDepois volte para o PowerShell normal (sem admin).\nEtapa 6b: Push com a chave Personal Dentro da pasta do projeto (self_backup), execute:\n# Limpar e carregar a chave Personal\nssh-add -D\nssh-add \"C:\\Users\\Admin\\.ssh\\id_ed25519_sk_personal_v2\"\n# Verificar se carregou corretamente\nssh-add -l\n# Assinar o change\njj sign --key \"C:\\Users\\Admin\\.ssh\\id_ed25519_sk_personal_v2\"\n# Fazer o push\njj git push\n\n✅ Etapa 6: Assinatura e Tentativa de Push — Muito Bom! Análise:\njj sign → Funcionou perfeitamente (assinou o change). jj git push → Deu “Nothing changed” porque o bookmark main ainda não está trackeando o remote.\nIsso é normal na migração.\n\n\n5.2.0.6 .7Próxima etapa (Etapa 7): Corrigir o bookmark e fazer o push final\nExecute:\n# 1. Corrigir o tracking do bookmark\njj bookmark track main --remote=origin\n# 2. Fazer o push novamente\njj git push\n\nObservações importantes:\nO comando jj bookmark track resolve o aviso que apareceu. Depois disso, o jj git push deve enviar as alterações. Toque na YubiKey se for solicitado novamente.\n✅ Etapa 7: Bookmark track — Feito!\nO tracking foi configurado corretamente.\nPor que ainda aparece “Nothing changed”? Porque as alterações que você fez (README.md e backmeup.py) já foram incluídas no change atual que você descreveu e assinou. O jj não vê mais nada pendente para enviar.\n\n\n5.2.0.7 .8Próxima etapa (Etapa 8): Forçar o push ou criar um novo change\nExecute uma das duas opções:\nOpção A (Recomendada agora):\n# Fazer push forçando o envio do change atual\njj git push --force\n\n✅ Correto!\nO jj git push não aceita –force dessa forma. Vamos usar o comando correto do jj.\nCorreção (Etapa 8 corrigida): Execute:\n# Forçar o push no jj (forma correta)\njj git push --allow-dirty\n\n✅ Entendido!\nO jj git push não aceita –allow-dirty. Vamos usar a abordagem mais simples e confiável.\nEtapa 8 Corrigida (faça agora):\n# 1. Crie um novo change pequeno só para testar o push\njj new -m \"Teste de push após migração para jj\"\n# 2. Assine o change\njj sign --key \"C:\\Users\\Admin\\.ssh\\id_ed25519_sk_personal_v2\"\n# 3. Faça o push\njj git push\n\n\n✅ Entendi!\nVocê criou o novo change com jj new, mas o push ainda não enviou nada porque o bookmark main ainda não está totalmente sincronizado com o remote.\nPróxima etapa (Etapa 9): Execute estes comandos:\n# 1. Corrigir o tracking do bookmark (importante após jj new)\njj bookmark track main --remote=origin\n# 2. Fazer o push novamente\njj git push\n\n✅ Entendi o que está acontecendo.\nMesmo após o jj bookmark track, o jj git push ainda diz “Nothing changed” porque o novo change criado com jj new não está sendo considerado parte do main para o push padrão.\nEtapa 9 Corrigida (solução definitiva): Execute estes comandos:\n# 1. Mover o bookmark 'main' para o change atual\njj bookmark set main\n# 2. Fazer o push\njj git push\n\n✅ SUCESSO TOTAL! 🎉\nO push foi realizado com sucesso!\nAnálise final desta etapa: O jj enviou os objetos para o repositório remoto. Um novo commit foi criado no GitHub/GitLab. A migração com –colocate está completa. Etapa Final: Verificação no GitHub Abra o navegador e vá até o seu repositório. Verifique se o commit mais recente aparece com o selo Verified (verde). Confira se o arquivo README.md foi atualizado com as mudanças.\n\n\n\n5.2.0.8 Resumo Final: Migração Git → jj com –colocate (Fluxo de Sucesso)\nPré-requisitos Repositório Git limpo e atualizado (git status e git pull) ssh-agent rodando Chave YubiKey carregada (ssh-add) Fluxo de Sucesso (Passo a Passo) 1. Entre na pasta do repositório Git existente\ncd caminho/do/seu/repositorio\n\nInicialize o jj em modo colocate\n\njj git init --colocate\n\nVerifique o status e histórico\n\njj st\njj log\n\nFaça alterações e descreva o change\n\n# Faça suas alterações normalmente\njj describe -m \"Descrição clara do change\"\n\nConfigure o bookmark main\n\njj bookmark set main\njj bookmark track main --remote=origin\n\nAssine e envie (Fluxo que funcionou)\n\n# Assine o change\njj sign --key \"C:\\Users\\Admin\\.ssh\\id_ed25519_sk_personal_v2\"   # Windows\n# ou\njj sign --key \"~/.ssh/gitlab_fido2\"                             # Linux\n# Faça o push\njj git push\n\n\n5.2.0.9 Comandos Essenciais do Dia a Dia (após migração)\njj st                    # Status\njj log                   # Histórico\njj new                   # Novo change\njj describe -m \"...\"     # Editar mensagem\njj sign --key \"...\"      # Assinar\njj git push              # Enviar\n\n\n5.2.0.10 Alias recomendado (adicione no config.toml):\npushs = [\"sign\", \"--\", \"git\", \"push\"]\nUso: jj pushs",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Drill: Migrar Repositório Git Existente para jj (usando --colocate)</span>"
+    ]
+  }
+]
