@@ -7,6 +7,16 @@ book:
   subtitle: "Guia Prático de Jujutsu VCS com Quarto e uv"
   author: "Charles Duarte"
   date: last-modified
+
+  repo-url: https://github.com/linduarte/jujutsu-book
+  repo-actions: [edit, issue]
+  site-url: https://linduarte.github.io/jujutsu-book/
+
+  sidebar:
+    style: "docked"
+    search: true
+    collapse-level: 2
+
   chapters:
     - index.qmd
     - topics/getting-started.md
@@ -16,9 +26,18 @@ book:
 
 format:
   html:
-    theme: cosmo
-    code-copy: true
+    theme:
+      light: cosmo
+      dark: darkly
+    respect-user-color-scheme: true
+    page-layout: article
     toc: true
+    toc-depth: 3
+    toc-title: "Nesta página"
+    number-sections: true
+    code-copy: true
+    code-fold: show
+    highlight-style: github
 
 execute:
   freeze: auto
