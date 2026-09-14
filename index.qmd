@@ -1,0 +1,35 @@
+# Introdução {.unnumbered}
+
+Bem-vindo ao **Jujutsu Book**, um guia prático e direto sobre o **Jujutsu VCS (`jj`)**, um sistema de controle de versão moderno, rápido e orientado a revisões, projetado para operar perfeitamente em conjunto com o Git.
+
+---
+
+## 🎯 Sobre este Livro
+
+Este livro foi estruturado para servir como um caminho de aprendizado contínuo — desde os primeiros conceitos de co-localização com Git até fluxos avançados de reescrita de histórico sem medo.
+
+### Conteúdo do Guia
+
+- **Getting Started**: Conceitos fundamentais do `jj`, instalação e configuração inicial.
+- **Learning Path**: Trilha estruturada passo a passo para dominar a ferramenta.
+- **Exercícios Práticos**: Desafios guiados para fixação dos comandos do dia a dia.
+- **Estudos de Caso (Grok)**: Exemplos práticos e aprofundados de resolução de fluxos reais.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+Este projeto utiliza uma pilha moderna de documentação e desenvolvimento:
+
+| Ferramenta | Descrição |
+| :--- | :--- |
+| **Jujutsu (`jj`)** | Controle de versão principal em modo *co-located* com Git. |
+| **Quarto** | Gerador de documentação estática e livros interativos. |
+| **`uv`** | Gerenciador ultra-rápido de ambientes e dependências Python. |
+| **GitHub Pages & Actions** | Automação de compilação e publicação contínua. |
+
+---
+
+## 💡 Como Navegar
+
+Utilize o menu lateral à esquerda (ou o menu superior em dispositivos móveis) para alternar entre os tópicos. Se preferir a leitura noturna, ative o **Modo Escuro** clicando no ícone no topo da barra lateral!
